@@ -1,0 +1,55 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>E-Learning Platform Login</title>
+    <link rel="stylesheet" href="{% static 'css/Accounts/styles.css' %}" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">E-LEARNING PLATFORM</div>
+      <div class="main-content">
+        <div class="left-panel">
+          <img
+            loading="lazy"
+            src="{% static 'images/Accounts/image.jpg' %}"
+            alt="Motivational Image"
+            class="motivational-img"
+          />
+          <div class="image-caption"></div>
+        </div>
+        <div class="right-panel">
+          <div class="login-container">
+            <h2>Login Now</h2>
+            <div class="input-group">
+              <img
+                loading="lazy"
+                src="{% static 'images/Accounts/user.jpg' %}"
+                alt="User Icon"
+                class="input-icon"
+              />
+              <input
+                type="text"
+                placeholder="Email or Username"
+                id="username"
+              />
+            </div>
+            <div class="input-group">
+              <img
+                loading="lazy"
+                src="{% static 'images/Accounts/password.jpg' %}"
+                alt="Lock Icon"
+                class="input-icon"
+              />
+              <input type="password" placeholder="Password" id="password" />
+            </div>
+            <button class="login-button" onclick="login()">LOGIN</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="{%static 'js/Accounts/script.js' %}"></script>
+  </body>
+</html>
