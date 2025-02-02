@@ -10,15 +10,14 @@
   <body>
     <div class="container">
       <div class="main-content">
+        {% for course in courses %}
         <div class="course">
-          <a href="{% url 'devops'  %}">
-            <h2>DevOps</h2>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque
-              nisl eros, pulvinar facilisis justo mollis, auctor consequat urna.
-            </p>
+          <a href="{% url 'contents_list' course.id %}">
+            <h2>{{ course.title }}</h2>
+            <p>{{ course.description }}</p>
           </a>
         </div>
+        {% endfor %}
       </div>
     </div>
   </body>

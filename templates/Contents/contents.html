@@ -1,0 +1,515 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ course.title }}</title>
+    <link
+      rel="stylesheet"
+      href="{% static 'css/contents/contentsstyle.css' %}"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <div class="left-panel" id="left-panel">
+        <div
+          style="
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background-color: #b85042;
+          "
+        >
+          <button
+            onclick="window.history.back()"
+            style="
+              padding: 10px;
+              background-color: #ecf0f1;
+              color: #b85042;
+              border: none;
+              border-radius: 5px;
+              cursor: pointer;
+              font-weight: bold;
+            "
+          >
+            &#9664; Back to Course
+          </button>
+        </div>
+        <h2>{{ course.title }}</h2>
+        <ul>
+          {% for subtitle in course.subtitles.all %}
+          <li>
+            <div
+              class="subtitle-heading"
+              onclick="toggleSubtitle('subtitle-{{ subtitle.id }}')"
+            >
+              {{ subtitle.title }}
+            </div>
+            <ul id="subtitle-{{ subtitle.id }}" class="subtitle-content">
+              <li>
+                <div
+                  class="section-heading"
+                  onclick="toggleSection('pdf-{{ subtitle.id }}')"
+                >
+                  PDFs ({{ subtitle.pdfs.count }})
+                </div>
+                <ul id="pdf-{{ subtitle.id }}" class="section-content">
+                  {% for pdf in subtitle.pdfs.all %}
+                  <li class="pdf-title">
+                    <a
+                      href="javascript:void(0);"
+                      onclick="showPDF('{{ pdf.file.url }}', '{{ pdf.name }}', '{{ subtitle.title }}')"
+                      >{{ pdf.name }}</a
+                    >
+                  </li>
+                  {% endfor %}
+                </ul>
+              </li>
+              <li>
+                <div
+                  class="section-heading"
+                  onclick="toggleSection('video-{{ subtitle.id }}')"
+                >
+                  Videos ({{ subtitle.videos.count }})
+                </div>
+                <ul id="video-{{ subtitle.id }}" class="section-content">
+                  {% for video in subtitle.videos.all %}
+                  <li class="video-title">
+                    {% if video.file %}
+                    <a
+                      href="javascript:void(0);"
+                      onclick="showVideo('{{ video.file.url }}', '{{ video.name }}', '{{ subtitle.title }}')"
+                      >{{ video.name }}</a
+                    >
+                    {% else %}
+                    <a
+                      href="javascript:void(0);"
+                      onclick="showVideo('{{ video.url }}', '{{ video.name }}', '{{ subtitle.title }}')"
+                      >{{ video.name }}</a
+                    >
+                    {% endif %}
+                  </li>
+                  {% endfor %}
+                </ul>
+              </li>
+              <li>
+                <div
+                  class="section-heading"
+                  onclick="toggleSection('note-{{ subtitle.id }}')"
+                >
+                  Notes ({{ subtitle.notes.count }})
+                </div>
+                <ul id="note-{{ subtitle.id }}" class="section-content">
+                  {% for note in subtitle.notes.all %}
+                  <li class="note-title">
+                    <a
+                      href="javascript:void(0);"
+                      onclick="showNote('{{ note.content|linebreaksbr|safe }}', '{{ note.name }}', '{{ subtitle.title }}')"
+                      >{{ note.name }}</a
+                    >
+                  </li>
+                  {% endfor %}
+                </ul>
+              </li>
+            </ul>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+      <button
+        class="toggle-button"
+        id="toggle-button"
+        onclick="toggleLeftPanel()"
+        style="
+          border: 1px solid #ecf0f1;
+          background-color: #b85042;
+          z-index: 1000;
+          position: fixed;
+        "
+      >
+        &#9664;
+      </button>
+      <button
+        class="close-button"
+        id="close-button"
+        onclick="closeLeftPanel()"
+        style="
+          display: none;
+          border: 1px solid #ecf0f1;
+          background-color: #b85042;
+          z-index: 1000;
+          position: fixed;
+        "
+      >
+        &#10006;
+      </button>
+      <div class="right-panel" id="right-panel">
+        <div
+          style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+          "
+        >
+          <button
+            onclick="prevContent()"
+            style="
+              padding: 10px;
+              background-color: #b85042;
+              color: #ecf0f1;
+              border: none;
+              border-radius: 5px;
+              cursor: pointer;
+            "
+          >
+            &#9664; Previous
+          </button>
+          <div
+            id="current-content-info"
+            style="
+              flex-grow: 1;
+              text-align: center;
+              color: #b85042;
+              font-weight: bold;
+            "
+          >
+            <!-- Content info will be updated dynamically -->
+          </div>
+          <button
+            onclick="nextContent()"
+            style="
+              padding: 10px;
+              background-color: #b85042;
+              color: #ecf0f1;
+              border: none;
+              border-radius: 5px;
+              cursor: pointer;
+            "
+          >
+            Next &#9654;
+          </button>
+        </div>
+        <div id="pdf-controls" class="pdf-controls" style="display: none">
+          <button onclick="prevPage()">Previous</button>
+          <button onclick="nextPage()">Next</button>
+          <span
+            >Page: <span id="page-num"></span> / <span id="page-count"></span
+          ></span>
+        </div>
+        <div
+          id="pdf-container"
+          style="overflow-y: auto; height: calc(100vh - 60px)"
+        >
+          <canvas id="pdf-canvas" style="width: 100%"></canvas>
+        </div>
+        <div id="video-container" style="display: none">
+          <video
+            id="video-player"
+            controls
+            style="width: 100%; height: calc(100vh - 60px)"
+            controlsList="nodownload"
+          >
+            <source id="video-source" src="" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+        </div>
+        <div
+          id="note-content"
+          style="display: none; overflow-y: auto; height: calc(100vh - 60px)"
+        ></div>
+      </div>
+    </div>
+    <script>
+      let pdfDoc = null,
+        pageNum = 1,
+        pageRendering = false,
+        pageNumPending = null,
+        scale = 1.5,
+        canvas = document.getElementById("pdf-canvas"),
+        ctx = canvas.getContext("2d");
+
+      function toggleLeftPanel() {
+        const leftPanel = document.getElementById("left-panel");
+        const toggleButton = document.getElementById("toggle-button");
+        const closeButton = document.getElementById("close-button");
+        const rightPanel = document.getElementById("right-panel");
+        if (leftPanel && toggleButton && closeButton && rightPanel) {
+          leftPanel.classList.toggle("collapsed");
+          if (leftPanel.classList.contains("collapsed")) {
+            leftPanel.style.width = "0";
+            toggleButton.innerHTML = "&#9654;";
+            toggleButton.style.left = "0";
+            rightPanel.style.left = "0";
+          } else {
+            leftPanel.style.width = "300px"; // Ensure consistent width
+            toggleButton.innerHTML = "&#9664;";
+            toggleButton.style.left = "300px";
+            closeButton.style.display = "block";
+            rightPanel.style.left = "300px";
+          }
+        }
+      }
+
+      function closeLeftPanel() {
+        const leftPanel = document.getElementById("left-panel");
+        const closeButton = document.getElementById("close-button");
+        const toggleButton = document.getElementById("toggle-button");
+        const rightPanel = document.getElementById("right-panel");
+        if (leftPanel && closeButton && toggleButton && rightPanel) {
+          leftPanel.classList.add("collapsed");
+          leftPanel.style.width = "0";
+          closeButton.style.display = "none";
+          toggleButton.innerHTML = "&#9654;";
+          toggleButton.style.left = "0";
+          rightPanel.style.left = "0";
+        }
+      }
+
+      function toggleSubtitle(subtitleId) {
+        const subtitle = document.getElementById(subtitleId);
+        const leftPanel = document.getElementById("left-panel");
+        if (subtitle && leftPanel) {
+          subtitle.classList.toggle("expanded");
+          leftPanel.style.width = "300px"; // Ensure consistent width
+        }
+      }
+
+      function toggleSection(sectionId) {
+        const section = document.getElementById(sectionId);
+        const leftPanel = document.getElementById("left-panel");
+        if (section && leftPanel) {
+          section.classList.toggle("expanded");
+          leftPanel.style.width = "300px"; // Ensure consistent width
+        }
+      }
+
+      function showPDF(url, title, subtitle) {
+        const pdfCanvas = document.getElementById("pdf-canvas");
+        const pdfControls = document.getElementById("pdf-controls");
+        const pdfContainer = document.getElementById("pdf-container");
+        const leftPanel = document.getElementById("left-panel");
+        const contentInfo = document.getElementById("current-content-info");
+        if (
+          pdfCanvas &&
+          pdfControls &&
+          pdfContainer &&
+          leftPanel &&
+          contentInfo
+        ) {
+          pdfjsLib.getDocument(url).promise.then(function (pdfDoc_) {
+            pdfDoc = pdfDoc_;
+            document.getElementById("page-count").textContent = pdfDoc.numPages;
+            renderPage(pageNum);
+            pdfCanvas.style.display = "block";
+            pdfControls.style.display = "block";
+            pdfContainer.style.display = "block";
+            document.getElementById("video-container").style.display = "none";
+            document.getElementById("note-content").style.display = "none";
+            leftPanel.style.width = "300px"; // Ensure consistent width
+            contentInfo.textContent = `${subtitle} - ${title}`;
+          });
+        }
+      }
+
+      function renderPage(num) {
+        pageRendering = true;
+        pdfDoc.getPage(num).then(function (page) {
+          const viewport = page.getViewport({ scale: scale });
+          canvas.height = viewport.height;
+          canvas.width = viewport.width;
+          const renderContext = {
+            canvasContext: ctx,
+            viewport: viewport,
+          };
+          const renderTask = page.render(renderContext);
+          renderTask.promise.then(function () {
+            pageRendering = false;
+            if (pageNumPending !== null) {
+              renderPage(pageNumPending);
+              pageNumPending = null;
+            }
+          });
+        });
+        document.getElementById("page-num").textContent = num;
+      }
+
+      function prevPage() {
+        if (pageNum <= 1) {
+          return;
+        }
+        pageNum--;
+        renderPage(pageNum);
+      }
+
+      function nextPage() {
+        if (pageNum >= pdfDoc.numPages) {
+          return;
+        }
+        pageNum++;
+        renderPage(pageNum);
+      }
+
+      function showVideo(url, title, subtitle) {
+        const videoPlayer = document.getElementById("video-player");
+        const videoSource = document.getElementById("video-source");
+        const videoContainer = document.getElementById("video-container");
+        const leftPanel = document.getElementById("left-panel");
+        const contentInfo = document.getElementById("current-content-info");
+        if (
+          videoPlayer &&
+          videoSource &&
+          videoContainer &&
+          leftPanel &&
+          contentInfo
+        ) {
+          videoSource.src = url;
+          videoPlayer.load();
+          videoPlayer.style.display = "block";
+          videoContainer.style.display = "block";
+          document.getElementById("pdf-canvas").style.display = "none";
+          document.getElementById("pdf-controls").style.display = "none";
+          document.getElementById("pdf-container").style.display = "none";
+          document.getElementById("note-content").style.display = "none";
+          leftPanel.style.width = "300px"; // Ensure consistent width
+          contentInfo.textContent = `${subtitle} - ${title}`;
+        }
+      }
+
+      function showNote(content, title, subtitle) {
+        const noteContent = document.getElementById("note-content");
+        const leftPanel = document.getElementById("left-panel");
+        const contentInfo = document.getElementById("current-content-info");
+        if (noteContent && leftPanel && contentInfo) {
+          noteContent.innerHTML = content;
+          noteContent.style.display = "block";
+          noteContent.scrollTop = 0;
+          document.getElementById("pdf-canvas").style.display = "none";
+          document.getElementById("pdf-controls").style.display = "none";
+          document.getElementById("pdf-container").style.display = "none";
+          document.getElementById("video-container").style.display = "none";
+          leftPanel.style.width = "300px"; // Ensure consistent width
+          contentInfo.textContent = `${subtitle} - ${title}`;
+        }
+      }
+
+      function prevContent() {
+        const currentContent = document.querySelector(
+          ".left-panel .subtitle-content .section-content .pdf-title a.active, .left-panel .subtitle-content .section-content .video-title a.active, .left-panel .subtitle-content .section-content .note-title a.active"
+        );
+        if (currentContent) {
+          const prevContent =
+            currentContent.parentElement.previousElementSibling;
+          if (prevContent) {
+            prevContent.querySelector("a").click();
+          } else {
+            const currentSection = currentContent.closest(".section-content");
+            const prevSection = currentSection.previousElementSibling;
+            if (prevSection) {
+              const lastItem = prevSection.querySelector("li:last-child a");
+              if (lastItem) {
+                lastItem.click();
+              } else {
+                prevContentInSection(prevSection);
+              }
+            } else {
+              const currentSubtitle =
+                currentContent.closest(".subtitle-content");
+              const prevSubtitle = currentSubtitle.previousElementSibling;
+              if (prevSubtitle) {
+                const lastSection = prevSubtitle.querySelector(
+                  ".section-content:last-child"
+                );
+                if (lastSection) {
+                  const lastItem = lastSection.querySelector("li:last-child a");
+                  if (lastItem) {
+                    lastItem.click();
+                  } else {
+                    prevContentInSection(lastSection);
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+
+      function prevContentInSection(section) {
+        const lastItem = section.querySelector("li:last-child a");
+        if (lastItem) {
+          lastItem.click();
+        } else {
+          const prevSection = section.previousElementSibling;
+          if (prevSection) {
+            prevContentInSection(prevSection);
+          }
+        }
+      }
+
+      function nextContent() {
+        const currentContent = document.querySelector(
+          ".left-panel .subtitle-content .section-content .pdf-title a.active, .left-panel .subtitle-content .section-content .video-title a.active, .left-panel .subtitle-content .section-content .note-title a.active"
+        );
+        if (currentContent) {
+          const nextContent = currentContent.parentElement.nextElementSibling;
+          if (nextContent) {
+            nextContent.querySelector("a").click();
+          } else {
+            const currentSection = currentContent.closest(".section-content");
+            const nextSection = currentSection.nextElementSibling;
+            if (nextSection) {
+              const firstItem = nextSection.querySelector("li:first-child a");
+              if (firstItem) {
+                firstItem.click();
+              } else {
+                nextContentInSection(nextSection);
+              }
+            } else {
+              const currentSubtitle =
+                currentContent.closest(".subtitle-content");
+              const nextSubtitle = currentSubtitle.nextElementSibling;
+              if (nextSubtitle) {
+                const firstSection = nextSubtitle.querySelector(
+                  ".section-content:first-child"
+                );
+                if (firstSection) {
+                  const firstItem =
+                    firstSection.querySelector("li:first-child a");
+                  if (firstItem) {
+                    firstItem.click();
+                  } else {
+                    nextContentInSection(firstSection);
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+
+      function nextContentInSection(section) {
+        const firstItem = section.querySelector("li:first-child a");
+        if (firstItem) {
+          firstItem.click();
+        } else {
+          const nextSection = section.nextElementSibling;
+          if (nextSection) {
+            nextContentInSection(nextSection);
+          }
+        }
+      }
+
+      // Add active class to the clicked content link
+      document.querySelectorAll(".left-panel a").forEach((link) => {
+        link.addEventListener("click", function () {
+          document.querySelectorAll(".left-panel a").forEach((el) => {
+            el.classList.remove("active");
+          });
+          this.classList.add("active");
+        });
+      });
+    </script>
+  </body>
+</html>

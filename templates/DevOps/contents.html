@@ -1,0 +1,136 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ course.title }}</title>
+    <link rel="stylesheet" href="{% static "css/contents/contentsstyle.css" %}">
+  </head>
+  <body>
+    <div class="container">
+      <div class="left-panel" id="left-panel">
+        <h2>{{ course.title }}</h2>
+        <ul>
+          {% for subtitle in course.subtitles.all %}
+          <li onclick="toggleSubtitle('subtitle-{{ subtitle.id }}')">
+            {{ subtitle.title }}
+            <ul id="subtitle-{{ subtitle.id }}" class="subtitle-content">
+              <li onclick="toggleSection('pdf-{{ subtitle.id }}')">PDFs</li>
+              <ul id="pdf-{{ subtitle.id }}" class="section-content">
+                {% for pdf in subtitle.pdfs.all %}
+                <li>
+                  <a
+                    href="javascript:void(0);"
+                    onclick="showPDF('{{ pdf.file.url }}')"
+                    >{{ pdf.name }}</a
+                  >
+                </li>
+                {% endfor %}
+              </ul>
+              <li onclick="toggleSection('video-{{ subtitle.id }}')">Videos</li>
+              <ul id="video-{{ subtitle.id }}" class="section-content">
+                {% for video in subtitle.videos.all %}
+                <li>
+                  {% if video.file %}
+                  <a
+                    href="javascript:void(0);"
+                    onclick="showVideo('{{ video.file.url }}')"
+                    >{{ video.name }}</a
+                  >
+                  {% else %}
+                  <a
+                    href="javascript:void(0);"
+                    onclick="showVideo('{{ video.url }}')"
+                    >{{ video.name }}</a
+                  >
+                  {% endif %}
+                </li>
+                {% endfor %}
+              </ul>
+              <li onclick="toggleSection('note-{{ subtitle.id }}')">Notes</li>
+              <ul id="note-{{ subtitle.id }}" class="section-content">
+                {% for note in subtitle.notes.all %}
+                <li>
+                  <a
+                    href="javascript:void(0);"
+                    onclick="showNote('{{ note.content|safe }}')"
+                    >{{ note.name }}</a
+                  >
+                </li>
+                {% endfor %}
+              </ul>
+            </ul>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+      <button
+        class="toggle-button"
+        id="toggle-button"
+        onclick="toggleLeftPanel()"
+      >
+        &#9776;
+      </button>
+      <div class="right-panel" id="right-panel">
+        <iframe
+          id="pdf-frame"
+          style="width: 100%; height: 500px; display: none"
+        ></iframe>
+        <video
+          id="video-player"
+          controls
+          style="width: 100%; height: 500px; display: none"
+        >
+          <source id="video-source" src="" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+        <div id="note-content" style="display: none"></div>
+      </div>
+    </div>
+    <script>
+      function toggleLeftPanel() {
+        const leftPanel = document.getElementById("left-panel");
+        const toggleButton = document.getElementById("toggle-button");
+        leftPanel.classList.toggle("collapsed");
+        toggleButton.classList.toggle("collapsed");
+      }
+
+      function toggleSubtitle(subtitleId) {
+        const subtitle = document.getElementById(subtitleId);
+        subtitle.classList.toggle("expanded");
+      }
+
+      function toggleSection(sectionId) {
+        const section = document.getElementById(sectionId);
+        section.classList.toggle("expanded");
+      }
+
+      function showPDF(url) {
+        const pdfFrame = document.getElementById("pdf-frame");
+        pdfFrame.src = url;
+        pdfFrame.style.display = "block";
+        document.getElementById("video-player").style.display = "none";
+        document.getElementById("note-content").style.display = "none";
+      }
+
+      function showVideo(url) {
+        const videoPlayer = document.getElementById("video-player");
+        const videoSource = document.getElementById("video-source");
+        videoSource.src = url;
+        videoPlayer.load();
+        videoPlayer.style.display = "block";
+        document.getElementById("pdf-frame").style.display = "none";
+        document.getElementById("note-content").style.display = "none";
+      }
+
+      function showNote(content) {
+        const noteContent = document.getElementById("note-content");
+        noteContent.innerHTML = content;
+        noteContent.style.display = "block";
+        document.getElementById("pdf-frame").style.display = "none";
+        document.getElementById("video-player").style.display = "none";
+      }
+    </script>
+  </body>
+</html>
