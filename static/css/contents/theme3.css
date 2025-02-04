@@ -339,10 +339,3 @@ button:hover {
   border-radius: 5px;
   border: 1px solid #ccc;
 }
-
-.header-bar,
-.theme-selector,
-.back-button {
-  background-color: #4a148c;
-  color: #f3e5f5;
-}

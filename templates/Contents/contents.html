@@ -17,8 +17,8 @@
       /* Add this CSS to handle the toggle button movement */
       .toggle-button {
         position: absolute;
-        top: 70px; /* Adjust this value to place below the header */
-        left: 300px; /* Adjust this value based on the width of the left panel */
+        top: 10px;
+        left: 250px; /* Adjust this value based on the width of the left panel */
         transition: left 0.3s;
       }
       .left-panel.collapsed ~ .toggle-button {
@@ -61,9 +61,6 @@
         flex: 0 0 auto;
         margin: 0 5px; /* Reduce the gap between buttons */
       }
-      .nav-button:first-child {
-        margin-left: 50px; /* Move the "Previous" button to the right */
-      }
       .content-info {
         flex: 1 1 auto;
         text-align: center;
@@ -74,7 +71,7 @@
       .back-button {
         position: absolute;
         top: 10px;
-        left: 10px;
+        right: 50px;
         background-color: inherit; /* Use the same background color as the header */
         color: inherit; /* Use the same text color as the header */
         border: none;
@@ -83,13 +80,21 @@
         border-radius: 5px;
       }
       .back-button:hover {
-        background-color: var(--header-text-color, #000000);
+        background-color: var(--header-text-color, #ffffff);
         color: var(--header-bg-color, #ffffff);
+      }
+      .course-title {
+        position: absolute;
+        top: 10px;
+        left: 75px;
+        font-size: 1.5em;
+        font-weight: bold;
       }
     </style>
   </head>
   <body class="theme-default">
     <div class="header-bar">
+      <div class="course-title">{{ course.title }}</div>
       <button onclick="window.history.back()" class="back-button">
         &#9664; Back to Course
       </button>
@@ -114,7 +119,7 @@
     </button>
     <div class="container">
       <div class="left-panel" id="left-panel">
-        <h2>{{ course.title }}</h2>
+        <!-- <h2>{{ course.title }}</h2> -->
         <ul>
           {% for subtitle in course.subtitles.all %}
           <li>

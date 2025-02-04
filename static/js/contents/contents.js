@@ -319,40 +319,40 @@ function updateHeaderBarColor(theme) {
       headerBar.style.color = "#d1e7f0";
       themeSelector.style.backgroundColor = "#1e3a5f";
       themeSelector.style.color = "#d1e7f0";
-      backButton.style.backgroundColor = "#1e3a5f";
-      backButton.style.color = "#d1e7f0";
+      backButton.style.backgroundColor = "#d1e7f0";
+      backButton.style.color = "#1e3a5f";
       break;
     case "theme2":
       headerBar.style.backgroundColor = "#2e7d32";
       headerBar.style.color = "#e8f5e9";
       themeSelector.style.backgroundColor = "#2e7d32";
       themeSelector.style.color = "#e8f5e9";
-      backButton.style.backgroundColor = "#2e7d32";
-      backButton.style.color = "#e8f5e9";
+      backButton.style.backgroundColor = "#e8f5e9";
+      backButton.style.color = "#2e7d32";
       break;
     case "theme3":
       headerBar.style.backgroundColor = "#4a148c";
       headerBar.style.color = "#f3e5f5";
       themeSelector.style.backgroundColor = "#4a148c";
       themeSelector.style.color = "#f3e5f5";
-      backButton.style.backgroundColor = "#4a148c";
-      backButton.style.color = "#f3e5f5";
+      backButton.style.backgroundColor = "#f3e5f5";
+      backButton.style.color = "#4a148c";
       break;
     case "theme4":
       headerBar.style.backgroundColor = "#b71c1c";
       headerBar.style.color = "#ffebee";
       themeSelector.style.backgroundColor = "#b71c1c";
       themeSelector.style.color = "#ffebee";
-      backButton.style.backgroundColor = "#b71c1c";
-      backButton.style.color = "#ffebee";
+      backButton.style.backgroundColor = "#ffebee";
+      backButton.style.color = "#b71c1c";
       break;
     default:
       headerBar.style.backgroundColor = "#b85042";
       headerBar.style.color = "#e7e8d1";
       themeSelector.style.backgroundColor = "#b85042";
       themeSelector.style.color = "#e7e8d1";
-      backButton.style.backgroundColor = "#b85042";
-      backButton.style.color = "#e7e8d1";
+      backButton.style.backgroundColor = "#e7e8d1";
+      backButton.style.color = "#b85042";
       break;
   }
 }
