@@ -5,9 +5,23 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Courses</title>
-    <link rel="stylesheet" href="{% static "css/courses/coursesstyle.css" %}">
+    <link
+      id="theme-stylesheet"
+      rel="stylesheet"
+      href="{% static 'css/courses/coursesstyle.css' %}"
+    />
   </head>
-  <body>
+  <body class="theme-default">
+    <div class="theme-selector">
+      <label for="theme-select">Select Theme:</label>
+      <select id="theme-select" onchange="changeTheme(this.value)">
+        <option value="coursesstyle">Default</option>
+        <option value="theme1">Theme 1</option>
+        <option value="theme2">Theme 2</option>
+        <option value="theme3">Theme 3</option>
+        <option value="theme4">Theme 4</option>
+      </select>
+    </div>
     <div class="container">
       <div class="main-content">
         {% for course in courses %}
@@ -20,5 +34,20 @@
         {% endfor %}
       </div>
     </div>
+    <script>
+      function changeTheme(theme) {
+        const themeStylesheet = document.getElementById("theme-stylesheet");
+        themeStylesheet.href = `{% static 'css/courses/' %}${theme}.css`;
+        document.body.className = theme; // Add theme class to body
+        localStorage.setItem("selectedTheme", theme);
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const savedTheme =
+          localStorage.getItem("selectedTheme") || "coursesstyle";
+        document.getElementById("theme-select").value = savedTheme;
+        changeTheme(savedTheme);
+      });
+    </script>
   </body>
 </html>

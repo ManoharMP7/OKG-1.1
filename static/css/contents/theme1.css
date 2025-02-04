@@ -1,0 +1,356 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #1e3a5f;
+  margin: 0;
+  padding: 0;
+  color: #d1e7f0;
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.container {
+  display: flex;
+  width: 100%;
+}
+
+.left-panel {
+  width: 300px; /* Set a consistent width */
+  background-color: #1e3a5f;
+  color: #d1e7f0;
+  overflow-y: auto;
+  transition: width 0.3s;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 0; /* Remove padding to align background colors */
+}
+
+.left-panel.collapsed {
+  width: 0; /* Collapse to 0 width */
+}
+
+.left-panel h2 {
+  padding: 20px;
+  margin: 0;
+  background-color: #1e3a5f;
+}
+
+.left-panel ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  padding-left: 0; /* Remove extra padding */
+}
+
+.left-panel li {
+  padding: 5px 10px; /* Further reduce padding */
+  cursor: pointer;
+}
+
+.left-panel li:hover {
+  background-color: #1e3a5f;
+}
+
+.left-panel .subtitle-heading {
+  color: #000;
+  font-weight: bold;
+  background-color: #d1e7f0;
+  padding: 10px;
+  border-radius: 5px;
+  margin: 0; /* Remove margin to align background colors */
+  margin-bottom: 2px; /* Further reduce margin */
+  margin: 5px 0; /* Add margin to the items */
+  padding-left: 0; /* Ensure consistent padding */
+}
+
+.left-panel .subtitle-heading:hover {
+  background-color: #673c20;
+}
+
+.left-panel .section-heading {
+  color: #000;
+  font-weight: bold;
+  padding-left: 0;
+  background-color: #d1e7f0;
+  padding: 10px;
+  border-radius: 5px;
+  margin: 0; /* Remove margin to align background colors */
+  margin-bottom: 2px; /* Further reduce margin */
+  margin: 5px 0; /* Add margin to the items */
+  padding-left: 0; /* Ensure consistent padding */
+}
+
+.left-panel .section-heading:hover {
+  background-color: #f2f2f2;
+}
+
+.left-panel .subtitle-content {
+  display: none;
+  padding-left: 20px;
+  background-color: #d1e7f0;
+}
+
+.left-panel .subtitle-content.expanded {
+  display: block;
+  background-color: #d1e7f0;
+}
+
+.left-panel .section-content {
+  display: none;
+  padding-left: 20px;
+  background-color: #d1e7f0;
+}
+
+.left-panel .section-content.expanded {
+  display: block;
+  background-color: #d1e7f0;
+}
+
+.left-panel .pdf-title,
+.left-panel .video-title,
+.left-panel .note-title {
+  color: #000;
+  font-weight: bold;
+  padding-left: 0;
+  background-color: #d1e7f0;
+  padding: 10px;
+  border-radius: 5px;
+  margin: 0; /* Remove margin to align background colors */
+  margin-bottom: 2px; /* Further reduce margin */
+  margin: 5px 0; /* Add margin to the items */
+  padding-left: 0; /* Ensure consistent padding */
+}
+
+.left-panel .pdf-title:hover,
+.left-panel .video-title:hover,
+.left-panel .note-title:hover {
+  background-color: #d1e7f0;
+}
+
+.right-panel {
+  flex-grow: 1;
+  padding: 20px;
+  overflow-y: auto;
+  background-color: #d1e7f0;
+  color: #000;
+  position: fixed; /* Ensure the right panel remains fixed */
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 300px; /* Adjust to match the left panel width */
+  transition: left 0.3s;
+}
+
+.left-panel.collapsed ~ .right-panel {
+  left: 0;
+}
+
+.right-panel h3 {
+  margin-top: 0;
+}
+
+.toggle-button {
+  position: absolute;
+  top: 10px;
+  left: 300px; /* Adjust width as needed */
+  transition: left 0.3s;
+  background-color: #1e3a5f; /* Match theme color */
+  color: #d1e7f0; /* Match theme color */
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.left-panel.collapsed + .toggle-button {
+  left: 0;
+}
+
+.close-button {
+  position: absolute;
+  top: 10px;
+  left: 300px;
+  background-color: #1e3a5f; /* Match theme color */
+  color: #d1e7f0; /* Match theme color */
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  display: none;
+}
+
+#pdf-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  background-color: #1e3a5f;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+#pdf-controls button {
+  background-color: #d1e7f0;
+  color: #000;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+#pdf-controls button:hover {
+  background-color: #1e3a5f;
+}
+
+#pdf-container {
+  overflow-y: auto;
+  height: calc(100vh - 60px);
+}
+
+#pdf-canvas {
+  border: 1px solid #ccc;
+  width: 100%;
+}
+
+#video-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: calc(100vh - 60px);
+}
+
+#video-player {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+#note-content {
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  max-height: calc(100vh - 60px);
+  overflow-y: auto;
+  word-wrap: break-word; /* Ensure long words break to the next line */
+  white-space: pre-wrap; /* Ensure text wraps correctly */
+  overflow-wrap: break-word; /* Ensure long words break to the next line */
+}
+
+#note-content h1,
+#note-content h2,
+#note-content h3,
+#note-content h4,
+#note-content h5,
+#note-content h6 {
+  margin-top: 0;
+}
+
+#note-content p {
+  line-height: 1.6;
+  margin: 10px 0;
+}
+
+#note-content ul,
+#note-content ol {
+  margin: 10px 0 10px 20px;
+}
+
+#note-content code {
+  background-color: #f5f5f5;
+  padding: 2px 4px;
+  border-radius: 3px;
+}
+
+button {
+  background-color: #1e3a5f;
+  color: #d1e7f0;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+button:hover {
+  background-color: #d1e7f0;
+  color: #1e3a5f;
+}
+
+.back-button {
+  background-color: #1e3a5f;
+  color: #d1e7f0;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.back-button:hover {
+  background-color: #d1e7f0;
+  color: #1e3a5f;
+}
+
+.nav-button {
+  background-color: #1e3a5f;
+  color: #d1e7f0;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.nav-button:hover {
+  background-color: #d1e7f0;
+  color: #1e3a5f;
+}
+
+.navigation-buttons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.content-info {
+  /* ...existing code... */
+}
+
+.header-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: var(--header-bg-color, #1e3a5f);
+  color: var(--header-text-color, #d1e7f0);
+  padding: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.theme-selector {
+  background-color: var(--header-bg-color, #1e3a5f);
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.theme-selector label {
+  margin-right: 10px;
+  font-weight: bold;
+}
+
+.theme-selector select {
+  padding: 5px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.header-bar,
+.theme-selector,
+.back-button {
+  background-color: #1e3a5f;
+  color: #d1e7f0;
+}

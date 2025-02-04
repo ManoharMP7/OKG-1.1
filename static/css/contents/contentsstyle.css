@@ -23,10 +23,15 @@ body {
   position: relative;
   display: flex;
   flex-direction: column;
+  padding: 0; /* Remove padding to align background colors */
 }
 
 .left-panel.collapsed {
   width: 0; /* Collapse to 0 width */
+}
+
+.left-panel.collapsed ~ .toggle-button {
+  left: 10px;
 }
 
 .left-panel h2 {
@@ -39,11 +44,13 @@ body {
   list-style: none;
   padding: 0;
   margin: 0;
+  padding-left: 0; /* Remove extra padding */
 }
 
 .left-panel li {
   padding: 5px 10px; /* Further reduce padding */
   cursor: pointer;
+  margin-bottom: 5px; /* Reduce the gap between items */
 }
 
 .left-panel li:hover {
@@ -51,12 +58,14 @@ body {
 }
 
 .left-panel .subtitle-heading {
-  color: #000000;
+  color: #000;
   font-weight: bold;
   background-color: #e7e8d1;
-  padding: 10px;
+  padding: 5px;
   border-radius: 5px;
-  margin-bottom: 2px; /* Further reduce margin */
+  margin-bottom: 5px; /* Reduce the gap between subtitles */
+  margin: 0; /* Add margin to the items */
+  padding-left: 0; /* Ensure consistent padding */
 }
 
 .left-panel .subtitle-heading:hover {
@@ -64,13 +73,15 @@ body {
 }
 
 .left-panel .section-heading {
-  color: #000000;
+  color: #000;
   font-weight: bold;
   padding-left: 10px;
   background-color: #ffffff;
   padding: 10px;
   border-radius: 5px;
-  margin-bottom: 2px; /* Further reduce margin */
+  margin-bottom: 5px; /* Reduce the gap between sections */
+  margin: 0; /* Remove margin to align background colors */
+  padding-left: 0; /* Ensure consistent padding */
 }
 
 .left-panel .section-heading:hover {
@@ -102,13 +113,15 @@ body {
 .left-panel .pdf-title,
 .left-panel .video-title,
 .left-panel .note-title {
-  color: #ffffff;
+  color: #000;
   font-weight: bold;
   padding-left: 20px;
   background-color: #e7e8d1;
   padding: 10px;
   border-radius: 5px;
-  margin-bottom: 2px; /* Further reduce margin */
+  margin-bottom: 5px; /* Reduce the gap between items */
+  margin: 0; /* Remove margin to align background colors */
+  padding-left: 0; /* Ensure consistent padding */
 }
 
 .left-panel .pdf-title:hover,
@@ -152,8 +165,8 @@ body {
   border-radius: 5px;
 }
 
-.left-panel.collapsed + .toggle-button {
-  left: 0;
+.left-panel.collapsed ~ .toggle-button {
+  left: 10px;
 }
 
 .close-button {
@@ -181,7 +194,7 @@ body {
 
 #pdf-controls button {
   background-color: #e7e8d1;
-  color: #000000;
+  color: #000;
   border: none;
   padding: 10px;
   cursor: pointer;
@@ -251,7 +264,190 @@ body {
   border-radius: 3px;
 }
 
+button {
+  background-color: #b85042;
+  color: #e7e8d1;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
 button:hover {
   background-color: #e7e8d1;
   color: #b85042;
+}
+
+.back-button {
+  background-color: #b85042;
+  color: #e7e8d1;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.back-button:hover {
+  background-color: #e7e8d1;
+  color: #b85042;
+}
+
+.nav-button {
+  background-color: #b85042;
+  color: #e7e8d1;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  flex: 0 0 auto;
+  margin: 0 5px; /* Reduce the gap between buttons */
+}
+
+.nav-button:hover {
+  background-color: #e7e8d1;
+  color: #b85042;
+}
+
+.navigation-buttons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  position: relative;
+  z-index: 999; /* Ensure it is above other elements */
+}
+
+.content-info {
+  flex: 1 1 auto;
+  text-align: center;
+  white-space: nowrap; /* Prevent text from wrapping */
+  overflow: hidden;
+  text-overflow: ellipsis; /* Add ellipsis for overflow text */
+}
+
+.header-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: var(--header-bg-color, #ffffff);
+  color: var(--header-text-color, #000000);
+  padding: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.theme-selector {
+  position: fixed;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  background-color: inherit; /* Use the same background color as the header */
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.theme-selector label {
+  margin-right: 10px;
+  font-weight: bold;
+}
+
+.theme-selector select {
+  padding: 5px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+/* Theme-specific styles */
+body.theme1 .header-bar,
+body.theme1 .theme-selector,
+body.theme1 .back-button {
+  background-color: #1e3a5f;
+  color: #d1e7f0;
+}
+
+body.theme1 .back-button:hover {
+  background-color: #d1e7f0;
+  color: #1e3a5f;
+}
+
+body.theme2 .header-bar,
+body.theme2 .theme-selector,
+body.theme2 .back-button {
+  background-color: #2e7d32;
+  color: #e8f5e9;
+}
+
+body.theme2 .back-button:hover {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+body.theme3 .header-bar,
+body.theme3 .theme-selector,
+body.theme3 .back-button {
+  background-color: #4a148c;
+  color: #f3e5f5;
+}
+
+body.theme3 .back-button:hover {
+  background-color: #f3e5f5;
+  color: #4a148c;
+}
+
+body.theme4 .header-bar,
+body.theme4 .theme-selector,
+body.theme4 .back-button {
+  background-color: #b71c1c;
+  color: #ffebee;
+}
+
+body.theme4 .back-button:hover {
+  background-color: #ffebee;
+  color: #b71c1c;
+}
+
+body.theme1 {
+  background-color: #1e3a5f;
+  color: #d1e7f0;
+}
+
+body.theme1 #note-content {
+  background-color: #1e3a5f;
+  color: #d1e7f0;
+}
+
+body.theme2 {
+  background-color: #2e7d32;
+  color: #e8f5e9;
+}
+
+body.theme2 #note-content {
+  background-color: #2e7d32;
+  color: #e8f5e9;
+}
+
+body.theme3 {
+  background-color: #4a148c;
+  color: #f3e5f5;
+}
+
+body.theme3 #note-content {
+  background-color: #4a148c;
+  color: #f3e5f5;
+}
+
+body.theme4 {
+  background-color: #b71c1c;
+  color: #ffebee;
+}
+
+body.theme4 #note-content {
+  background-color: #b71c1c;
+  color: #ffebee;
 }
