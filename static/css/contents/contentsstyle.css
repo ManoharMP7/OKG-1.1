@@ -330,6 +330,7 @@ button:hover {
   top: 0;
   left: 0;
   width: 100%;
+  height: 40px;
   background-color: var(--header-bg-color, #ffffff);
   color: var(--header-text-color, #000000);
   padding: 10px;

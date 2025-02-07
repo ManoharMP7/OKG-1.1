@@ -1,11 +1,18 @@
-# In your views.py
-
 from django.shortcuts import render
-from .models import Course
+from .models import Group, Course
 
 def courses(request):
-    courses = Course.objects.all()
-    background_info = "This is some background information."
-    return render(request, 'Courses/courses.html', {'courses': courses, 'background_info': background_info})
+    groups = Group.objects.all()  # Fetch all groups
+    # Attempt to get the "Default" group, and create it if it doesn't exist
+    default_group, created = Group.objects.get_or_create(name="Default")
 
+    courses = Course.objects.all()  # Fetch all courses
 
+    # Filter courses that don't belong to any group or subgroup (they will be in the default group)
+    default_group_courses = courses.filter(group=None, subgroup=None)
+    
+    return render(request, 'Courses/courses.html', {
+        'groups': groups,
+        'default_group_courses': default_group_courses,
+        'courses': courses
+    })

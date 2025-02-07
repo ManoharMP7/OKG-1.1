@@ -13,6 +13,75 @@ body {
   padding: 20px;
 }
 
+.group-controls {
+  margin-bottom: 20px;
+}
+
+.group-controls input {
+  padding: 10px;
+  font-size: 16px;
+  margin-right: 10px;
+}
+
+.group-controls button {
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.group {
+  margin-bottom: 20px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+}
+
+.group h3 {
+  margin-top: 0;
+  font-size: 20px;
+  display: inline-block;
+  margin-right: 10px;
+}
+
+.group-content {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.group-content.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px; /* Add gap between courses */
+}
+
+.subgroup {
+  margin-bottom: 20px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+}
+
+.subgroup h4 {
+  margin-top: 0;
+  font-size: 18px;
+  display: inline-block;
+  margin-right: 10px;
+}
+
+.subgroup-content {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.subgroup-content.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px; /* Add gap between courses */
+}
+
 .main-content {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -30,6 +99,15 @@ body {
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  position: relative;
+  flex: 0 1 calc(25% - 20px); /* Ensure exactly 4 courses per row without expanding */
+  box-sizing: border-box; /* Include padding and border in the element's total width and height */
+}
+
+.course input.course-select {
+  position: absolute;
+  top: 10px;
+  left: 10px;
 }
 
 .course h2 {
@@ -40,4 +118,28 @@ body {
 
 .course p {
   font-size: 16px;
+}
+
+button {
+  background-color: #b71c1c;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 15px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-right: 10px;
+}
+
+button:hover {
+  background-color: #8e0000;
+}
+
+button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(183, 28, 28, 0.5);
+}
+
+.group button {
+  margin-top: 10px;
 }
